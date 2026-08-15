@@ -87,7 +87,7 @@ export const STATS = [
   { number: 4,    suffix: '+',  label: 'Major AI Projects',      icon: FaRobot,       accent: 'electric' },
   { number: 300,  suffix: '+',  label: 'DSA Problems Solved',     icon: FaCode,        accent: 'violet'   },
   { number: 1108, suffix: '',   label: 'Codeforces Rating',       icon: SiCodeforces,  accent: 'electric' },
-  { prefix: 'AIR ', number: 3373, suffix: '', label: 'JEE Advanced', icon: FaMedal,   accent: 'violet'   },
+  { prefix: 'AIR ', number: 333, suffix: '', label: 'JEE Advanced', icon: FaMedal,   accent: 'violet'   },
   { number: 2028, suffix: '',   label: 'Graduation',              icon: FaGraduationCap,accent: 'electric'},
   { number: 5,    suffix: '+',  label: 'Leadership Positions',    icon: FaUsers,       accent: 'violet'   },
 ];
@@ -311,7 +311,7 @@ export const PROJECTS = [
   },
 ];
 export const ACHIEVEMENTS = [
-  { icon: FaMedal,    label: 'JEE Advanced 2023', prefix: 'AIR ',  number: 3373, detail: 'ST Category Rank 30'  },
+  { icon: FaMedal,    label: 'JEE Advanced 2023', prefix: 'AIR ',  number: 333, detail: '2023 JEE ADV'  },
   { icon: SiCodeforces,label:'Codeforces',         prefix: '',     number: 1108, detail: 'Peak rating'           },
   { icon: FaMusic,    label: 'General Championship',staticValue: 'Silver', detail: 'Choreography, 2023–2024' },
 ];
