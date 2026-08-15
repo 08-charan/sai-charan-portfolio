@@ -1,0 +1,544 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   THEME
+   ========================================================= */
+
+:root {
+  --bg: #07070d;
+  --bg-soft: #0d0d17;
+
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-strong: rgba(255, 255, 255, 0.07);
+  --surface-border: rgba(255, 255, 255, 0.09);
+
+  --text-primary: #edeef7;
+  --text-secondary: #9396ac;
+
+  --grid-line: rgba(255, 255, 255, 0.035);
+  --scrollbar-track: #0d0d17;
+
+  --blue: #4f7dff;
+  --purple: #a855f7;
+  --cyan: #22d3ee;
+
+  --glow-blue: rgba(79, 125, 255, 0.18);
+  --glow-purple: rgba(168, 85, 247, 0.16);
+}
+
+html.light {
+  --bg: #f3f4fa;
+  --bg-soft: #ffffff;
+
+  --surface: rgba(17, 18, 28, 0.035);
+  --surface-strong: rgba(17, 18, 28, 0.055);
+  --surface-border: rgba(17, 18, 28, 0.09);
+
+  --text-primary: #11121c;
+  --text-secondary: #585b70;
+
+  --grid-line: rgba(17, 18, 28, 0.05);
+  --scrollbar-track: #e7e8f2;
+
+  --glow-blue: rgba(79, 125, 255, 0.12);
+  --glow-purple: rgba(168, 85, 247, 0.10);
+}
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease;
+  overflow-x: hidden;
+
+  /* Cursor spotlight follows CSS variables set by JS */
+  background-image:
+    radial-gradient(
+      circle 500px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      var(--glow-blue),
+      transparent 60%
+    );
+}
+
+/* =========================================================
+   SELECTION / SCROLLBAR / ACCESSIBILITY
+   ========================================================= */
+
+::selection {
+  background: rgba(168, 85, 247, 0.35);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    var(--blue),
+    var(--purple)
+  );
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    var(--purple),
+    var(--blue)
+  );
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* =========================================================
+   BACKGROUND GRID
+   ========================================================= */
+
+@layer utilities {
+  .text-primary-theme {
+    color: var(--text-primary);
+  }
+
+  .text-secondary-theme {
+    color: var(--text-secondary);
+  }
+
+  .bg-base-theme {
+    background-color: var(--bg);
+  }
+
+  .bg-soft-theme {
+    background-color: var(--bg-soft);
+  }
+
+  .border-theme {
+    border-color: var(--surface-border);
+  }
+
+  .bg-grid-fade {
+    position: relative;
+
+    background-image:
+      linear-gradient(
+        var(--grid-line) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        var(--grid-line) 1px,
+        transparent 1px
+      );
+
+    background-size: 38px 38px;
+
+    animation: grid-drift 24s linear infinite;
+  }
+
+  /* =======================================================
+     GLASSMORPHISM
+     ======================================================= */
+
+  .glass {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+      0 10px 40px rgba(0, 0, 0, 0.12);
+
+    transition:
+      transform 0.35s ease,
+      border-color 0.35s ease,
+      box-shadow 0.35s ease,
+      background-color 0.35s ease;
+  }
+
+  .glass:hover {
+    border-color: rgba(168, 85, 247, 0.24);
+
+    box-shadow:
+      0 16px 55px rgba(0, 0, 0, 0.18),
+      0 0 30px rgba(168, 85, 247, 0.06);
+  }
+
+  .glass-strong {
+    background: var(--surface-strong);
+    border: 1px solid var(--surface-border);
+
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+
+    box-shadow:
+      0 16px 50px rgba(0, 0, 0, 0.14);
+  }
+
+  /* =======================================================
+     TEXT
+     ======================================================= */
+
+  .gradient-text {
+    background-image:
+      linear-gradient(
+        120deg,
+        var(--blue) 0%,
+        var(--purple) 55%,
+        var(--cyan) 100%
+      );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    background-size: 200% auto;
+
+    animation: gradient-shift 7s ease-in-out infinite;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+
+  /* =======================================================
+     PREMIUM CARD HOVER
+     ======================================================= */
+
+  .premium-card {
+    position: relative;
+    overflow: hidden;
+
+    border: 1px solid var(--surface-border);
+
+    transition:
+      transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-color 0.35s ease,
+      box-shadow 0.35s ease;
+  }
+
+  .premium-card::before {
+    content: '';
+
+    position: absolute;
+    inset: -1px;
+
+    background:
+      linear-gradient(
+        120deg,
+        transparent 20%,
+        rgba(79, 125, 255, 0.18),
+        rgba(168, 85, 247, 0.18),
+        transparent 80%
+      );
+
+    opacity: 0;
+    transition: opacity 0.35s ease;
+
+    pointer-events: none;
+  }
+
+  .premium-card:hover {
+    transform: translateY(-7px);
+
+    border-color: rgba(168, 85, 247, 0.28);
+
+    box-shadow:
+      0 20px 70px rgba(0, 0, 0, 0.22),
+      0 0 35px rgba(79, 125, 255, 0.08);
+  }
+
+  .premium-card:hover::before {
+    opacity: 1;
+  }
+
+  /* =======================================================
+     BUTTON GLOW
+     ======================================================= */
+
+  .glow-button {
+    position: relative;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease,
+      filter 0.25s ease;
+  }
+
+  .glow-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+      0 12px 35px rgba(79, 125, 255, 0.24),
+      0 0 25px rgba(168, 85, 247, 0.14);
+
+    filter: brightness(1.08);
+  }
+
+  .glow-button:active {
+    transform: translateY(0);
+  }
+
+  /* =======================================================
+     FLOATING GRADIENT BLOBS
+     ======================================================= */
+
+  .ambient-glow {
+    position: absolute;
+    width: 420px;
+    height: 420px;
+
+    border-radius: 999px;
+
+    filter: blur(110px);
+
+    opacity: 0.14;
+
+    pointer-events: none;
+
+    animation:
+      ambient-float 12s ease-in-out infinite;
+  }
+
+  .ambient-blue {
+    background: var(--blue);
+  }
+
+  .ambient-purple {
+    background: var(--purple);
+    animation-delay: -4s;
+  }
+
+  .ambient-cyan {
+    background: var(--cyan);
+    animation-delay: -8s;
+  }
+
+  /* =======================================================
+     CURSOR SPOTLIGHT ELEMENT
+     ======================================================= */
+
+  .cursor-glow {
+    position: fixed;
+
+    width: 420px;
+    height: 420px;
+
+    left: var(--cursor-x, 50%);
+    top: var(--cursor-y, 50%);
+
+    transform: translate(-50%, -50%);
+
+    border-radius: 999px;
+
+    background:
+      radial-gradient(
+        circle,
+        rgba(79, 125, 255, 0.08) 0%,
+        rgba(168, 85, 247, 0.05) 35%,
+        transparent 70%
+      );
+
+    pointer-events: none;
+
+    z-index: 9999;
+
+    mix-blend-mode: screen;
+
+    transition:
+      left 0.12s ease-out,
+      top 0.12s ease-out;
+
+    opacity: 0.9;
+  }
+
+  /* =======================================================
+     SECTION REVEAL
+     ======================================================= */
+
+  .reveal-up {
+    opacity: 0;
+    transform: translateY(28px);
+
+    transition:
+      opacity 0.7s ease,
+      transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .reveal-up.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* =======================================================
+     NAVBAR
+     ======================================================= */
+
+  .navbar-glass {
+    background: rgba(7, 7, 13, 0.58);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    border-bottom:
+      1px solid rgba(255, 255, 255, 0.06);
+
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .navbar-glass.scrolled {
+    background: rgba(7, 7, 13, 0.82);
+
+    border-bottom-color:
+      rgba(168, 85, 247, 0.12);
+
+    box-shadow:
+      0 8px 30px rgba(0, 0, 0, 0.14);
+  }
+
+  /* =======================================================
+     SHINE EFFECT
+     ======================================================= */
+
+  .shine {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shine::after {
+    content: '';
+
+    position: absolute;
+
+    top: 0;
+    left: -120%;
+
+    width: 60%;
+    height: 100%;
+
+    background:
+      linear-gradient(
+        100deg,
+        transparent,
+        rgba(255, 255, 255, 0.08),
+        transparent
+      );
+
+    transform: skewX(-18deg);
+
+    transition: left 0.8s ease;
+
+    pointer-events: none;
+  }
+
+  .shine:hover::after {
+    left: 140%;
+  }
+}
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes ambient-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(35px, -25px, 0) scale(1.08);
+  }
+}
+
+@keyframes grid-drift {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 38px 38px;
+  }
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .ambient-glow {
+    width: 260px;
+    height: 260px;
+    filter: blur(75px);
+  }
+
+  .cursor-glow {
+    display: none;
+  }
+
+  .premium-card:hover {
+    transform: translateY(-3px);
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .cursor-glow {
+    display: none;
+  }
+}
