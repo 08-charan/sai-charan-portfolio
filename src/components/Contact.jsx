@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import emailjs from '@emailjs/browser';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
   FiSend,
@@ -34,26 +35,85 @@ export default function Contact() {
     message: '',
   });
 
+  const [isSending, setIsSending] = useState(false);
+  const [status, setStatus] = useState({
+    type: '',
+    message: '',
+  });
+
   const onChange = (event) => {
     setForm((current) => ({
       ...current,
       [event.target.name]: event.target.value,
     }));
+
+    // Clear old status message when user starts typing again
+    if (status.message) {
+      setStatus({
+        type: '',
+        message: '',
+      });
+    }
   };
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
 
-    const subject = encodeURIComponent(
-      `Portfolio inquiry from ${form.name || 'your site'}`
-    );
+    if (isSending) return;
 
-    const body = encodeURIComponent(
-      `${form.message}\n\n— ${form.name} (${form.email})`
-    );
+    setIsSending(true);
+    setStatus({
+      type: '',
+      message: '',
+    });
 
-    window.location.href =
-      `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+    try {
+      // Make sure these are configured in your .env file
+      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+      if (!serviceId || !templateId || !publicKey) {
+        throw new Error(
+          'EmailJS configuration is missing. Please check your .env file.'
+        );
+      }
+
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          to_email: CONTACT_EMAIL,
+        },
+        {
+          publicKey,
+        }
+      );
+
+      setStatus({
+        type: 'success',
+        message: 'Message sent successfully! ✅',
+      });
+
+      setForm({
+        name: '',
+        email: '',
+        message: '',
+      });
+    } catch (error) {
+      console.error('Email sending failed:', error);
+
+      setStatus({
+        type: 'error',
+        message:
+          'Unable to send your message. Please try again or email me directly.',
+      });
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -203,8 +263,8 @@ export default function Contact() {
 
                 <p className="mt-4 text-sm leading-6 text-secondary-theme">
                   Have an opportunity, project idea, or collaboration in mind?
-                  Send me a message and it will open directly in your email
-                  client.
+                  Send me a message and it will be delivered directly to my
+                  inbox.
                 </p>
               </div>
 
@@ -331,12 +391,26 @@ export default function Contact() {
                   />
                 </div>
 
+                {/* Status message */}
+                {status.message && (
+                  <div
+                    className={`rounded-xl border px-4 py-3 text-xs ${
+                      status.type === 'success'
+                        ? 'border-signal/20 bg-signal/[0.05] text-signal'
+                        : 'border-red-400/20 bg-red-400/[0.05] text-red-300'
+                    }`}
+                  >
+                    {status.message}
+                  </div>
+                )}
+
                 {/* Submit */}
                 <div className="flex flex-wrap items-center gap-4 pt-1">
                   <motion.button
                     type="submit"
+                    disabled={isSending}
                     whileHover={
-                      reduceMotion
+                      reduceMotion || isSending
                         ? undefined
                         : {
                             y: -2,
@@ -344,7 +418,7 @@ export default function Contact() {
                           }
                     }
                     whileTap={
-                      reduceMotion
+                      reduceMotion || isSending
                         ? undefined
                         : {
                             scale: 0.98,
@@ -363,9 +437,12 @@ export default function Contact() {
                       text-sm
                       font-medium
                       text-white
+                      transition-opacity
+                      disabled:cursor-not-allowed
+                      disabled:opacity-60
                     "
                   >
-                    Send Message
+                    {isSending ? 'Sending...' : 'Send Message'}
                     <FiSend size={13} />
                   </motion.button>
 
@@ -374,7 +451,7 @@ export default function Contact() {
                       size={12}
                       className="text-signal"
                     />
-                    Opens your email client
+                    Messages sent directly to my inbox
                   </span>
                 </div>
               </div>
